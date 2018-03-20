@@ -1,53 +1,32 @@
 #include "Arduino.h"
-#include "SoftwareSerial.h" //библиотека для работы с последовательным портом
-#include "DFRobotDFPlayerMini.h"  //библиотека для работы с MP3-плеером
+#include "SoftwareSerial.h" 
+#include "DFRobotDFPlayerMini.h" 
 
-SoftwareSerial DFPlayer(8, 9); //порты RX, TX на плате, к которым подключается MP3-плеер
-DFRobotDFPlayerMini KibaPlayer; //именуем MP3-плеер
+SoftwareSerial DFPlayer(8, 9);
+DFRobotDFPlayerMini KibaPlayer;
 
-volatile unsigned int Kiba = 1;  //флаг для отслеживания сказанных фраз
+volatile unsigned int Kiba = 1;
 
 void setup()
 {
   DFPlayer.begin(9600);
-  if (!KibaPlayer.begin(DFPlayer)) {  //включение плеера
+  if (!KibaPlayer.begin(DFPlayer)) {
     while (true) {
       delay(0);
     }
   }
-  KibaPlayer.volume(20);  //громкость звука
+  KibaPlayer.volume(20); 
 
-  attachInterrupt(1, SayKiba, RISING);  //прерывание по нажатию тревожной кнопки
+  attachInterrupt(1, SayKiba, RISING); 
 }
 
 void loop()
 {
 }
 
-void SayKiba()  //обработчик прерываний с кнопки
+void SayKiba()  
 {
   KibaPlayer.play(Kiba);  //Kibaaa Kibaaa!
   Kiba++;
   if (Kiba == 6) Kiba = 1;
 }
-
-/*void loop()
-{
-  noInterrupts();
-  KibaKiba = Kiba;  //передача данных из обработчика прерываний
-  interrupts();
-
-  if (KibaKiba) {
-    KibaPlayer.play(kiba);  //Kibaaa Kibaaa!
-    delay(2500);
-    kiba++;
-    KibaKiba = 0;
-    Kiba = 0;
-    if (kiba == 6) kiba = 1;
-  };
-}
-
-void SayKiba()  //обработчик прерываний с кнопки
-{
-  Kiba = 1;
-}*/
